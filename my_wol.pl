@@ -14,6 +14,7 @@ test_strategy_h(N, _, _, 0, Draws, BlueWins, RedWins, Longest, Shortest, TimeSum
   format('Average No. Moves:~t~w~n', [AvgMoves]),
   format('Average Time:~t~w~n', [AvgTime]).  
 test_strategy_h(N, St_1, St_2, K, Draws, BlueWins, RedWins, Longest, Shortest, TimeSum, MoveSum):-
+  format('.',[]),
   now(Start),
   play(quiet, St_1, St_2, M, W),
   now(End),
@@ -36,15 +37,15 @@ test_strategy_h(N, St_1, St_2, K, Draws, BlueWins, RedWins, Longest, Shortest, T
   ( W = 'r'
   -> 
     NewRedWins is RedWins + 1, 
-    test_strategy_h(N2, St_1, St_2, NK, Draws, BlueWins, NewRedWins, NLongest, NShortest, NTimeSum, NMoveSum)
+    test_strategy_h(N, St_1, St_2, NK, Draws, BlueWins, NewRedWins, NLongest, NShortest, NTimeSum, NMoveSum)
   ;
     W = 'b'
   ->
     NewBlueWins is BlueWins + 1, 
-    test_strategy_h(N2, St_1, St_2, NK, Draws, NewBlueWins, RedWins, NLongest, NShortest, NTimeSum, NMoveSum)
+    test_strategy_h(N, St_1, St_2, NK, Draws, NewBlueWins, RedWins, NLongest, NShortest, NTimeSum, NMoveSum)
   ;
     NDws is Draws + 1, 
-    test_strategy_h(N2, St_1, St_2, NK, NDws, BlueWins, RedWins, NLongest, NShortest, NTimeSum, NMoveSum)
+    test_strategy_h(N, St_1, St_2, NK, NDws, BlueWins, RedWins, NLongest, NShortest, NTimeSum, NMoveSum)
    ).
 
 
