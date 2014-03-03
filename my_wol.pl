@@ -4,8 +4,8 @@ test_strategy(N, St_1, St_2):-
   test_strategy_h(N, St_1, St_2, N, 0, 0, 0, 0, 250, 0, 0),!.
 
 test_strategy_h(N, _, _, 0, Draws, BlueWins, RedWins, Longest, Shortest, TimeSum, MoveSum):-
-  format('Red Wins:~t~w~n', [RedWins]),
   format('Blue Wins:~t~w~n', [BlueWins]),
+  format('Red Wins:~t~w~n', [RedWins]),
   format('Draws:~t~w~n', [Draws]),
   format('Longest Game:~t~w~n', [Longest]),
   format('Shortest Game:~t~w~n', [Shortest]),
@@ -13,8 +13,8 @@ test_strategy_h(N, _, _, 0, Draws, BlueWins, RedWins, Longest, Shortest, TimeSum
   AvgMoves is MoveSum / N,
   format('Average No. Moves:~t~w~n', [AvgMoves]),
   format('Average Time:~t~w~n', [AvgTime]).  
+
 test_strategy_h(N, St_1, St_2, K, Draws, BlueWins, RedWins, Longest, Shortest, TimeSum, MoveSum):-
-  format('.',[]),
   now(Start),
   play(quiet, St_1, St_2, M, W),
   now(End),
@@ -50,7 +50,7 @@ test_strategy_h(N, St_1, St_2, K, Draws, BlueWins, RedWins, Longest, Shortest, T
 
 
 % ------------- QUESTION 4 ---------------------------
-%
+
 %_-_-_-_-_-_-_-_-_-_ BLOOD LUST _-_-_-_-_-_-_-_-_-_-_-_
 
 bloodlust(Col, CurState, NewState, Move):-
@@ -131,7 +131,8 @@ best_minimax(Col, [[ThisMove, ThisState]|Xs], MaxSoFar, BestMove, BestState, Mov
     best_minimax(Col, Xs, MaxSoFar, BestMove, BestState, Move, State)
   ).
 
-% Returns the worst possible outcome from the given state.
+% Returns the worst possible outcome from the given state. Generates all
+% the possible moves and calls best_min to do the leg work.
 min_score(Col, State, 1, Score, _):-
   land_grab_score(Col, State, Score),!.
 min_score(Col, State, Depth, Score, MaxToBeat):-
@@ -143,8 +144,8 @@ min_score(Col, State, Depth, Score, MaxToBeat):-
 
 % Returns the worst score possible from the list of given states.
 % If at any point the Min is less than the best score from another
-% move the search ends and returns the current Min which we know will 
-% not be picked. (Min < MaxToBeat).
+% move the search ends and returns the current Min (which we know will 
+% not be picked). (Min < MaxToBeat).
 best_min(_, [], _, Min, Min, _).
 best_min(Col,[[_,State]|Xs], Depth, Min, Score, MaxToBeat):-
   max_score(Col, State, Depth, ThisScore, Min),
@@ -191,7 +192,10 @@ best_max(Col, [[_,State]|Xs], Depth, Max, Score, MinToBeat):-
     best_max(Col, Xs, Depth, Max, Score, BestMin)
   ).
 
-% Strategy Helper Methods
+%------------------ Helper Methods ---------------------------
+
+% Returns a list of all the legal moves red can take and the
+% resulting state. 
 get_moves('r', [Blues, Reds], Result):-
    findall([[A,B,MA,MB],[Blues, NewReds]],
                 (
@@ -204,6 +208,8 @@ get_moves('r', [Blues, Reds], Result):-
 		        Result
           ).
 
+% Returns a list of all the legal moves blue can take and the
+% resulting state.
 get_moves('b', [Blues, Reds], Result):-
    findall([[A,B,MA,MB],[NewBlues, Reds]],
                 (
@@ -217,11 +223,13 @@ get_moves('b', [Blues, Reds], Result):-
           ).
 
 
+% Returns the number of alive blues/reds in a given state. 
 num_pieces('b', [Blues, _], N):-
   length(Blues, N).
 num_pieces('r', [_, Reds], N):-
   length(Reds, N).
 
+% Returns the opponents colour.
 opposite_colour('r', 'b').
 opposite_colour('b', 'r').
 
